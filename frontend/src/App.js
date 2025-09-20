@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
-
 const initialForm = { name: '', email: '', phone: '' };
 
 function App() {
@@ -14,7 +13,7 @@ function App() {
   const limit = 10;
 
   useEffect(() => {
-    axios.get(`/contacts?page=${page}&limit=${limit}`).then(res => {
+    axios.get(`${process.env.REACT_APP_API_URL}/contacts?page=${page}&limit=${limit}`).then(res => {
       setContacts(res.data.contacts);
       setTotal(res.data.total);
     });
@@ -34,18 +33,18 @@ function App() {
   const handleSubmit = async e => {
     e.preventDefault();
     if (!validate()) return;
-    await axios.post('/contacts', form);
+    await axios.post(`${process.env.REACT_APP_API_URL}/contacts`, form);
     setForm(initialForm);
     setPage(1);
     // Refetch first page after add
-    axios.get(`/contacts?page=1&limit=${limit}`).then(res => {
+    axios.get(`${process.env.REACT_APP_API_URL}/contacts?page=1&limit=${limit}`).then(res => {
       setContacts(res.data.contacts);
       setTotal(res.data.total);
     });
   };
 
   const handleDelete = id => {
-    axios.delete(`/contacts/${id}`).then(() => {
+    axios.delete(`${process.env.REACT_APP_API_URL}/contacts/${id}`).then(() => {
       setContacts(contacts.filter(c => c.id !== id));
       setTotal(total - 1);
     });
@@ -83,4 +82,5 @@ function App() {
     </div>
   );
 }
+
 export default App;
